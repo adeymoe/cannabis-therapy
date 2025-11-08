@@ -1,7 +1,7 @@
 # 🌿 Weed Therapy App
 Weed Therapy is an AI-assisted wellness companion that blends mindful cannabis journaling with emotionally intelligent conversations. Users chat with a supportive “weed therapist,” reflect on their mood, and revisit past sessions for ongoing self-awareness. The entire experience is powered by a full-stack architecture that pairs Google’s Gemini models with a secure, scalable backend.
 
-**Link to project:** 
+**Link to project:** https://weed-therapy.vercel.app/
 
 ## How It's Made:
 
