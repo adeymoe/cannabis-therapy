@@ -24,7 +24,6 @@ const AuthPage = ({ onAuth }) => {
     const { email, password, username } = form;
 
     if (!email || !password || password.length < 8) {
-      console.log("2nd started submit");
       toast.error('Please enter a valid email and password (min 8 chars)');
       return;
     }

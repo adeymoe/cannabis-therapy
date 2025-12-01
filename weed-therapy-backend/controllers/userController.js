@@ -5,16 +5,23 @@ import jwt from "jsonwebtoken";
 
 const createToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
+// Get current authenticated user (used by /me endpoint)
 const getUser = async (req, res) => {
   try {
-    const { password, ...safeUser } = req.user.toObject();
+    const user = req.user;
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const { password, ...safeUser } = user.toObject ? user.toObject() : user;
     res.status(200).json({ success: true, user: safeUser });
   } catch (error) {
+    console.error("Error in getUser:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
-
+// Login user
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -34,10 +41,12 @@ const loginUser = async (req, res) => {
 
     res.json({ success: true, token, user: safeUser });
   } catch (error) {
+    console.error("Error in loginUser:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
+// Register user
 const registerUser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -66,12 +75,29 @@ const registerUser = async (req, res) => {
 
     res.json({ success: true, token, user: safeUser });
   } catch (error) {
+    console.error("Error in registerUser:", error);
     res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Get user profile (used by /profile endpoint for Dashboard)
+const getUserProfile = async (req, res) => {
+  try {
+    // req.user is already attached by authUser middleware
+    const user = await userModel.findById(req.user._id).select('-password');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found.' });
+    }
+    return res.json({ success: true, user });
+  } catch (err) {
+    console.error('Error fetching user profile:', err);
+    return res.status(500).json({ success: false, message: 'Server error.' });
   }
 };
 
 export {
   loginUser,
   registerUser,
-  getUser
+  getUser,
+  getUserProfile,
 };
