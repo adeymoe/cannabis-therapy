@@ -7,6 +7,7 @@ import AuthPage from './components/Authpage';
 import CheckinPage from './components/CheckinPage';
 import DashboardPage from './components/DashboardPage.jsx';
 import 'react-toastify/dist/ReactToastify.css';
+import Footer from './components/Footer.jsx';
 
 function App() {
   const [token, setToken] = useState(null);
@@ -52,6 +53,7 @@ function App() {
         draggable
         theme="light"
       />
+      <Footer/>
     </div>
   );
 }

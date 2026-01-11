@@ -162,7 +162,6 @@ const Chatpage = () => {
     const token = localStorage.getItem("token");
     if (!token) return navigate("/auth");
 
-    console.log("🚀 Creating session with code:", sessionTypeCode);
 
     try {
       const res = await axios.post(
@@ -174,7 +173,6 @@ const Chatpage = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      console.log("✅ Session created:", res.data.session);
 
       if (res.data.success) {
         const newSession = res.data.session;
@@ -360,7 +358,6 @@ const Chatpage = () => {
           }
         );
         if (res.data.success) {
-          console.log("📋 Session types loaded:", res.data.types);
 
           const allTypes = res.data.types || [];
 
@@ -424,20 +421,13 @@ const Chatpage = () => {
 
       const userId = getUserId();
       if (!userId) {
-        console.log("   ⚠️ Could not get user ID from token");
         return;
       }
 
       const todayKey = getTodayKey();
       const alreadyHandled = localStorage.getItem(todayKey);
 
-      console.log("🔍 Checking daily check-in...");
-      console.log("   User ID:", userId);
-      console.log("   Today's key:", todayKey);
-      console.log("   LocalStorage value:", alreadyHandled);
-
       if (alreadyHandled === "done") {
-        console.log("   ✅ Already handled today (localStorage)");
         setShowDailyCheckin(false);
         return;
       }
@@ -450,24 +440,18 @@ const Chatpage = () => {
           }
         );
 
-        console.log("   Backend response:", res.data);
-
         if (res.data?.success) {
           if (res.data.checkin) {
-            console.log("   ✅ Check-in already completed today");
             localStorage.setItem(todayKey, "done");
             setShowDailyCheckin(false);
           } else {
-            console.log("   🌤️ No check-in yet - showing popup");
             setShowDailyCheckin(true);
           }
         } else {
-          console.log("   ❌ Backend returned success: false");
           setShowDailyCheckin(false);
         }
       } catch (err) {
         console.error("Error checking daily check-in status", err);
-        console.log("   ⚠️ Error - showing popup to be safe");
         setShowDailyCheckin(true);
       }
     };

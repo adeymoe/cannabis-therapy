@@ -6,6 +6,7 @@ import userRouter from './routes/userRoute.js'
 import chatRouter from './routes/chatRoute.js'
 import checkinRouter from './routes/checkinRoute.js'
 import sessionRouter from './routes/sessionRoute.js';
+import strainRouter from './routes/strainRoute.js';
 
 
 //App Config
@@ -22,6 +23,7 @@ app.use('/api/user', userRouter)
 app.use('/api/chat', chatRouter)
 app.use('/api/checkin', checkinRouter)
 app.use('/api/session', sessionRouter);
+app.use('/api/strain', strainRouter);
 
 
 

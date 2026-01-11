@@ -1,11 +1,13 @@
-// src/components/Header.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { CgProfile } from 'react-icons/cg';
 import weedLogo from '../assets/weedLogo.jpg';
+import axios from 'axios';
 
 const Header = ({ title }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [loadingRec, setLoadingRec] = useState(false);
+  const [recommendations, setRecommendations] = useState(null);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,38 +32,103 @@ const Header = ({ title }) => {
   const onChat = location.pathname === '/';
   const onDashboard = location.pathname === '/dashboard';
 
+  // Fetch strain recommendations based on latest check-in
+  const fetchRecommendations = async () => {
+    setLoadingRec(true);
+    setRecommendations(null);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/strain/recommend`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.data.success) {
+        setRecommendations(res.data.recommendations || []);
+      } else {
+        alert('Failed to fetch recommendations');
+      }
+    } catch (err) {
+      console.error('Error fetching recommendations:', err);
+      alert('Error fetching recommendations');
+    } finally {
+      setLoadingRec(false);
+    }
+  };
+
+  // Show recommendations in a simple modal
+  const RecommendationModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-[2000] p-4">
+      <div className="bg-white rounded-xl max-w-lg w-full p-6 relative shadow-lg overflow-y-auto max-h-[80vh]">
+        <h2 className="text-xl font-bold mb-4">Strain Recommendations</h2>
+        <button
+          onClick={() => setRecommendations(null)}
+          className="absolute top-3 right-3 text-gray-600 hover:text-gray-900 font-bold text-lg"
+          aria-label="Close modal"
+        >
+          &times;
+        </button>
+        {recommendations.length === 0 && <p>No recommendations available.</p>}
+        <ul className="space-y-6">
+          {recommendations.map((rec, i) => (
+            <li key={i} className="border p-4 rounded-md bg-green-50">
+              <h3 className="font-semibold text-lg">{rec.name}</h3>
+              {rec.imageUrl && (
+                <img
+                  src={rec.imageUrl}
+                  alt={`${rec.name} strain`}
+                  className="w-48 h-auto rounded-md mt-2 mb-3 object-cover shadow-md"
+                />
+              )}
+              <p><strong>Why:</strong> {rec.rationale}</p>
+              <p><strong>Safety:</strong> {rec.cautions}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+
   return (
-    <header className="w-full flex justify-center mb-6 relative z-[1000]">
+    <header className="w-full flex justify-center mb-6 relative z-[1000] px-2 sm:px-4">
       <div
-        className="w-full max-w-5xl rounded-2xl bg-white/80 backdrop-blur-md border border-[#e1ddd3] shadow-sm px-4 sm:px-6 py-3 flex items-center justify-between gap-3"
+        className="w-full max-w-5xl rounded-2xl bg-white/90 backdrop-blur-md border border-[#e1ddd3] shadow-sm px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3"
         ref={dropdownRef}
       >
         {/* Left: logo + brand */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-shrink-0 min-w-[180px]">
           <div className="h-10 w-10 rounded-full overflow-hidden border border-[#e1ddd3] bg-[#f5f3ee] flex items-center justify-center">
             <img
               src={weedLogo}
-              alt="Weed Therapy Logo"
+              alt="Cannabis Therapy Logo"
               className="h-full w-full object-cover"
             />
           </div>
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg sm:text-xl font-semibold text-[#2E3A33]">
-                {title}
+          <div className="flex flex-col min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-base sm:text-lg md:text-xl font-semibold text-[#2E3A33] truncate">
+                Cannabis Therapy
               </h1>
-              <span className="px-2 py-0.5 rounded-full bg-[#EAF5EF] text-[10px] uppercase tracking-wide text-[#2F7E57] font-semibold">
+              <span className="px-2 py-0.5 rounded-full bg-[#EAF5EF] text-[9px] sm:text-[10px] uppercase tracking-wide text-[#2F7E57] font-semibold whitespace-nowrap">
                 Beta
               </span>
             </div>
-            <p className="hidden sm:block text-xs text-[#7A6C58]">
+            <p className="hidden sm:block text-xs text-[#7A6C58] truncate max-w-[200px]">
               Calm, AI-guided support for cannabis use and mental health.
             </p>
           </div>
         </div>
 
-        {/* Right: primary nav icons + profile */}
-        <div className="flex items-center gap-1 sm:gap-2 relative">
+        {/* Right: primary nav icons + profile + new button */}
+        <div className="flex items-center gap-1 sm:gap-2 flex-wrap justify-end flex-grow min-w-[220px]">
+          {/* Recommend Strain Button */}
+          <button
+            onClick={fetchRecommendations}
+            disabled={loadingRec}
+            className="mr-2 px-3 py-1 rounded-lg bg-[#6CB28E] text-white font-semibold hover:bg-[#5a9a7a] transition disabled:opacity-50 whitespace-nowrap"
+            title="Get Strain Recommendations"
+          >
+            {loadingRec ? 'Loading...' : 'Recommend Strain'}
+          </button>
+
           {/* Chat icon */}
           <button
             type="button"
@@ -131,7 +198,7 @@ const Header = ({ title }) => {
               <div className="px-4 py-3 border-b border-[#f0ebe1]">
                 <p className="text-xs text-[#7A6C58]">Signed in to</p>
                 <p className="text-sm font-medium text-[#2E3A33]">
-                  Weed Therapy
+                  Cannabis Therapy
                 </p>
               </div>
 
@@ -186,6 +253,9 @@ const Header = ({ title }) => {
           )}
         </div>
       </div>
+
+      {/* Recommendation Modal */}
+      {recommendations && <RecommendationModal />}
     </header>
   );
 };

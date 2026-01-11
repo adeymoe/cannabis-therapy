@@ -1,5 +1,10 @@
 import checkinModel from "../models/checkinModel.js";
-import axios from "axios";
+import { GoogleGenAI } from '@google/genai';
+
+// Initialize Google Gemini client
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY,
+});
 
 // Helper: get start of today (midnight)
 const getStartOfDay = (date = new Date()) => {
@@ -47,7 +52,7 @@ const pearsonCorrelation = (xs, ys) => {
   return cov / (denomX * denomY);
 };
 
-// Generate AI summary using Gemini
+// Generate AI summary using Gemini via GoogleGenAI client
 const generateAISummary = async (mood, craving, stress, notes) => {
   try {
     const prompt = `The user submitted this mood check-in:
@@ -66,19 +71,12 @@ Format your response exactly as:
 Emotional State: [your summary]
 Suggestion: [your suggestion]`;
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: [{ text: prompt }],
+    });
 
-    const response = await axios.post(
-      url,
-      {
-        contents: [{ parts: [{ text: prompt }] }],
-      },
-      {
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
-
-    const text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const text = response.text || '';
 
     // Parse response
     const emotionalMatch = text.match(/Emotional State:\s*(.+)/i);
