@@ -10,7 +10,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import Header from "./Header";
 import { toast } from "react-toastify";
 
 const defaultStats = {
@@ -253,12 +252,9 @@ const DashboardPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#fdfcfa] to-[#f5f3ee] flex flex-col">
-        <Header title="Recovery Dashboard" />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="bg-white/80 backdrop-blur-sm border border-[#e1ddd3] rounded-xl px-6 py-4 shadow-sm text-[#6CB28E] text-sm">
-            Loading your recovery overview...
-          </div>
+      <div className="flex-1 flex items-center justify-center">
+        <div className="bg-white/80 backdrop-blur-sm border border-[#e1ddd3] rounded-xl px-6 py-4 shadow-sm text-[#6CB28E] text-sm">
+          Loading your recovery overview...
         </div>
       </div>
     );
@@ -266,12 +262,9 @@ const DashboardPage = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#fdfcfa] to-[#f5f3ee] flex flex-col">
-        <Header title="Recovery Dashboard" />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="bg-white/80 backdrop-blur-sm border border-[#e1ddd3] rounded-xl px-6 py-4 shadow-sm text-red-500 text-sm">
-            Failed to load user data.
-          </div>
+      <div className="flex-1 flex items-center justify-center">
+        <div className="bg-white/80 backdrop-blur-sm border border-[#e1ddd3] rounded-xl px-6 py-4 shadow-sm text-red-500 text-sm">
+          Failed to load user data.
         </div>
       </div>
     );
@@ -302,9 +295,7 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#fdfcfa] to-[#f5f3ee] pb-10">
-      <Header title="Recovery Dashboard" />
-
+    <div className="pb-10">
       <div className="max-w-6xl mx-auto px-4 mt-6 space-y-6">
         {/* Profile / greeting */}
         <div className="p-5 sm:p-6 bg-white/90 backdrop-blur-sm border border-[#e1ddd3] rounded-2xl shadow-sm flex items-start gap-3">
@@ -552,7 +543,7 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes fadeIn {
           from {
             opacity: 0;

@@ -2,12 +2,17 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import AppLayout from './components/AppLayout';
 import Chatpage from './components/Chatpage';
 import AuthPage from './components/Authpage';
 import CheckinPage from './components/CheckinPage';
 import DashboardPage from './components/DashboardPage.jsx';
-import 'react-toastify/dist/ReactToastify.css';
-import Footer from './components/Footer.jsx';
+import CUDScreening from './components/CUDScreening';
+import DrugInteractionChecker from './components/DrugInteractionChecker';
+import DosePage from './components/DosePage';
+import TplanPage from './components/TplanPage.jsx';
 
 function App() {
   const [token, setToken] = useState(null);
@@ -23,25 +28,32 @@ function App() {
     if (savedToken) setToken(savedToken);
   }, []);
 
-  // Basic route-guarding
-  if (!token && location.pathname !== '/auth') {
-    return <Navigate to="/auth" replace />;
-  }
-
-  if (token && location.pathname === '/auth') {
-    return <Navigate to="/" replace />;
-  }
+  if (!token && location.pathname !== '/auth') return <Navigate to="/auth" replace />;
+  if (token && location.pathname === '/auth') return <Navigate to="/" replace />;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f5f3ee] via-[#eef7f1] to-[#f0f5f8] text-[#2E3A33]">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <Routes>
-          <Route path="/" element={<Chatpage />} />
-          <Route path="/auth" element={<AuthPage onAuth={handleAuth} />} />
-          <Route path="/checkin" element={<CheckinPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-        </Routes>
-      </div>
+    <>
+      {location.pathname === '/auth' ? (
+        // Auth page — no sidebar
+        <div className="min-h-screen bg-gradient-to-br from-[#f5f3ee] via-[#eef7f1] to-[#f0f5f8]">
+          <Routes>
+            <Route path="/auth" element={<AuthPage onAuth={handleAuth} />} />
+          </Routes>
+        </div>
+      ) : (
+        // All other pages — wrapped in AppLayout (sidebar + topbar)
+        <AppLayout>
+          <Routes>
+            <Route path="/"               element={<Chatpage />} />
+            <Route path="/checkin"        element={<CheckinPage />} />
+            <Route path="/dashboard"      element={<DashboardPage />} />
+            <Route path="/cud-screening"  element={<CUDScreening />} />
+            <Route path="/interaction"    element={<DrugInteractionChecker />} />
+            <Route path="/dose"           element={<DosePage />} />
+            <Route path="/tplan"           element={<TplanPage />} />
+          </Routes>
+        </AppLayout>
+      )}
 
       <ToastContainer
         position="top-right"
@@ -53,8 +65,7 @@ function App() {
         draggable
         theme="light"
       />
-      <Footer/>
-    </div>
+    </>
   );
 }
 

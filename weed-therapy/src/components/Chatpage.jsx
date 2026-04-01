@@ -2,7 +2,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Header from "./Header";
 import { jwtDecode } from "jwt-decode";
 
 import SessionPickerModal from "./SessionPickerModal";
@@ -462,8 +461,6 @@ const Chatpage = () => {
 
   return (
     <>
-      <Header title="WEED THERAPY" />
-
       <div className="max-w-4xl mx-auto">
         {/* Session Controls - sticky bar */}
         <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-md border border-[#e1ddd3] rounded-2xl shadow-sm px-4 py-3 mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">

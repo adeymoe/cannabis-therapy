@@ -1,8 +1,6 @@
-// src/components/CheckinPage.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Header from "./Header";
 import { toast } from "react-toastify";
 
 const CheckinPage = () => {
@@ -179,12 +177,9 @@ const CheckinPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#fdfcfa] to-[#f5f3ee] flex flex-col">
-        <Header title="Daily Check-In" />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="bg-white/80 backdrop-blur-sm border border-[#e1ddd3] rounded-xl px-6 py-4 shadow-sm text-[#6CB28E] text-sm">
-            Loading your check-in...
-          </div>
+      <div className="flex-1 flex items-center justify-center">
+        <div className="bg-white/80 backdrop-blur-sm border border-[#e1ddd3] rounded-xl px-6 py-4 shadow-sm text-[#6CB28E] text-sm">
+          Loading your check-in...
         </div>
       </div>
     );
@@ -194,9 +189,7 @@ const CheckinPage = () => {
   const showForm = !todayCheckin || isEditing;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#fdfcfa] to-[#f5f3ee] pb-10">
-      <Header title="Daily Check-In" />
-
+    <div className="pb-10">
       <div className="max-w-3xl mx-auto px-4 mt-6">
         {/* Top intro card */}
         <div className="mb-6 bg-white/80 backdrop-blur-sm border border-[#e1ddd3] rounded-2xl shadow-sm p-5 sm:p-6">

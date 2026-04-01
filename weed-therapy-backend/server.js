@@ -7,6 +7,10 @@ import chatRouter from './routes/chatRoute.js'
 import checkinRouter from './routes/checkinRoute.js'
 import sessionRouter from './routes/sessionRoute.js';
 import strainRouter from './routes/strainRoute.js';
+import cudRoute from "./routes/cudRoute.js";
+import interactionRoute from "./routes/interactionRoute.js";
+import doseRoute from './routes/doseRoute.js';
+import tplanRouter from './routes/tplanRoute.js';
 
 
 //App Config
@@ -24,6 +28,10 @@ app.use('/api/chat', chatRouter)
 app.use('/api/checkin', checkinRouter)
 app.use('/api/session', sessionRouter);
 app.use('/api/strain', strainRouter);
+app.use("/api/cud", cudRoute);
+app.use("/api/interaction", interactionRoute);
+app.use("/api/dose", doseRoute);
+app.use('/api/tplan', tplanRouter);
 
 
 
